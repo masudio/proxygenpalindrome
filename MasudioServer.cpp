@@ -15,10 +15,10 @@
 #include <proxygen/httpserver/RequestHandlerFactory.h>
 #include <unistd.h>
 
-#include "EchoHandler.h"
-#include "EchoStats.h"
+#include "MainRouterHandler.h"
+#include "MasudioStats.h"
 
-using namespace EchoService;
+using namespace MasudioService;
 using namespace proxygen;
 
 using folly::EventBase;
@@ -34,10 +34,10 @@ DEFINE_string(ip, "localhost", "IP/Hostname to bind to");
 DEFINE_int32(threads, 0, "Number of threads to listen on. Numbers <= 0 "
              "will use the number of cores on this machine.");
 
-class EchoHandlerFactory : public RequestHandlerFactory {
+class MainRouterHandlerFactory : public RequestHandlerFactory {
  public:
   void onServerStart(folly::EventBase* evb) noexcept override {
-    stats_.reset(new EchoStats);
+    stats_.reset(new MasudioStats);
   }
 
   void onServerStop() noexcept override {
@@ -45,11 +45,11 @@ class EchoHandlerFactory : public RequestHandlerFactory {
   }
 
   RequestHandler* onRequest(RequestHandler*, HTTPMessage*) noexcept override {
-    return new EchoHandler(stats_.get());
+    return new MainRouterHandler(stats_.get());
   }
 
  private:
-  folly::ThreadLocalPtr<EchoStats> stats_;
+  folly::ThreadLocalPtr<MasudioStats> stats_;
 };
 
 int main(int argc, char* argv[]) {
@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
   options.shutdownOn = {SIGINT, SIGTERM};
   options.enableContentCompression = false;
   options.handlerFactories = RequestHandlerChain()
-      .addThen<EchoHandlerFactory>()
+      .addThen<MainRouterHandlerFactory>()
       .build();
 
   HTTPServer server(std::move(options));

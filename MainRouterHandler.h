@@ -20,13 +20,13 @@ namespace proxygen {
 class ResponseHandler;
 }
 
-namespace EchoService {
+namespace MasudioService {
 
-class EchoStats;
+class MasudioStats;
 
-class EchoHandler : public proxygen::RequestHandler {
+class MainRouterHandler : public proxygen::RequestHandler {
  public:
-  explicit EchoHandler(EchoStats* stats);
+  explicit MainRouterHandler(MasudioStats* stats);
 
   void onRequest(std::unique_ptr<proxygen::HTTPMessage> headers)
       noexcept override;
@@ -44,7 +44,7 @@ class EchoHandler : public proxygen::RequestHandler {
   bool isPalindrome(fbstring s);
 
  private:
-  EchoStats* const stats_{nullptr};
+  MasudioStats* const stats_{nullptr};
 
   std::unique_ptr<folly::IOBuf> body_;
 };

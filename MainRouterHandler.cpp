@@ -7,28 +7,28 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
-#include "EchoHandler.h"
+#include "MainRouterHandler.h"
 
 #include <proxygen/httpserver/RequestHandler.h>
 #include <proxygen/httpserver/ResponseBuilder.h>
 
 #include <folly/FBString.h>
 
-#include "EchoStats.h"
+#include "MasudioStats.h"
 
 using namespace proxygen;
 using namespace folly;
 
-namespace EchoService {
+namespace MasudioService {
 
-EchoHandler::EchoHandler(EchoStats* stats): stats_(stats) {
+MainRouterHandler::MainRouterHandler(MasudioStats* stats): stats_(stats) {
 }
 
-void EchoHandler::onRequest(std::unique_ptr<HTTPMessage> headers) noexcept {
+void MainRouterHandler::onRequest(std::unique_ptr<HTTPMessage> headers) noexcept {
   stats_->recordRequest();
 }
 
-void EchoHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept {
+void MainRouterHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept {
   if (body_) {
     body_->prependChain(std::move(body));
   } else {
@@ -36,7 +36,7 @@ void EchoHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept {
   }
 }
 
-void EchoHandler::onEOM() noexcept {
+void MainRouterHandler::onEOM() noexcept {
   folly::IOBuf* rawInput = body_.get();
   fbstring input;
   fbstring output;
@@ -62,19 +62,19 @@ void EchoHandler::onEOM() noexcept {
     .sendWithEOM();
 }
 
-void EchoHandler::onUpgrade(UpgradeProtocol protocol) noexcept {
+void MainRouterHandler::onUpgrade(UpgradeProtocol protocol) noexcept {
   // handler doesn't support upgrades
 }
 
-void EchoHandler::requestComplete() noexcept {
+void MainRouterHandler::requestComplete() noexcept {
   delete this;
 }
 
-void EchoHandler::onError(ProxygenError err) noexcept {
+void MainRouterHandler::onError(ProxygenError err) noexcept {
   delete this;
 }
 
-bool EchoHandler::isPalindrome(fbstring s) {
+bool MainRouterHandler::isPalindrome(fbstring s) {
 
   int length = s.length();
   for(int i = 0; i < (length / 2); i++) {

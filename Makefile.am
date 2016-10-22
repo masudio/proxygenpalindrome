@@ -1,10 +1,10 @@
 SUBDIRS = .
 
-noinst_PROGRAMS = echo_server
+noinst_PROGRAMS = masudio_server
 
-echo_server_SOURCES = \
-	EchoHandler.cpp \
-	EchoServer.cpp
+masudio_server_SOURCES = \
+	MainRouterHandler.cpp \
+	MasudioServer.cpp
 
-echo_server_LDADD = \
+masudio_server_LDADD = \
 	../../libproxygenhttpserver.la

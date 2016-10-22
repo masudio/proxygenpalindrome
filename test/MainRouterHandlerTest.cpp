@@ -10,23 +10,23 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <proxygen/httpserver/Mocks.h>
-#include <proxygen/httpserver/samples/echo/EchoHandler.h>
-#include <proxygen/httpserver/samples/echo/EchoStats.h>
+#include "../MainRouterHandler.h"
+#include "../MasudioStats.h"
 
-using namespace EchoService;
+using namespace MasudioService;
 using namespace proxygen;
 using namespace testing;
 
-class MockEchoStats : public EchoStats {
+class MockMasudioStats : public MasudioStats {
  public:
   MOCK_METHOD0(recordRequest, void());
   MOCK_METHOD0(getRequestCount, uint64_t());
 };
 
-class EchoHandlerFixture : public testing::Test {
+class MainRouterHandlerFixture : public testing::Test {
  public:
   void SetUp() override {
-    handler = new EchoHandler(&stats);
+    handler = new MainRouterHandler(&stats);
     responseHandler = folly::make_unique<MockResponseHandler>(handler);
     handler->setResponseHandler(responseHandler.get());
   }
@@ -41,12 +41,12 @@ class EchoHandlerFixture : public testing::Test {
   }
 
  protected:
-  EchoHandler* handler{nullptr};
-  StrictMock<MockEchoStats> stats;
+  MainRouterHandler* handler{nullptr};
+  StrictMock<MockMasudioStats> stats;
   std::unique_ptr<MockResponseHandler> responseHandler;
 };
 
-TEST_F(EchoHandlerFixture, OnProperRequestSendsResponse) {
+TEST_F(MainRouterHandlerFixture, OnProperRequestSendsResponse) {
   EXPECT_CALL(stats, recordRequest()).WillOnce(Return());
   EXPECT_CALL(stats, getRequestCount()).WillOnce(Return(5));
 
@@ -64,7 +64,7 @@ TEST_F(EchoHandlerFixture, OnProperRequestSendsResponse) {
   EXPECT_EQ(200, response.getStatusCode());
 }
 
-TEST_F(EchoHandlerFixture, ReplaysBodyProperly) {
+TEST_F(MainRouterHandlerFixture, ReplaysBodyProperly) {
   EXPECT_CALL(stats, recordRequest()).WillOnce(Return());
   EXPECT_CALL(stats, getRequestCount()).WillOnce(Return(5));
 

@@ -9,20 +9,20 @@
  */
 #pragma once
 
-namespace EchoService {
+namespace MasudioService {
 
 /**
  * Just some dummy class containing request count. Since we keep
  * one instance of this in each class, there is no need of
  * synchronization
  */
-class EchoStats {
+class MasudioStats {
  public:
-  virtual ~EchoStats() {
+  virtual ~MasudioStats() {
   }
 
   // NOTE: We make the following methods `virtual` so that we can
-  //       mock them using Gmock for our C++ unit-tests. EchoStats
+  //       mock them using Gmock for our C++ unit-tests. MasudioStats
   //       is an external dependency to handler and we should be
   //       able to mock it.
 
