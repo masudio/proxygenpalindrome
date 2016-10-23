@@ -15,6 +15,7 @@
 #include <folly/FBString.h>
 
 #include "MasudioStats.h"
+#include "HomePageHTML.h"
 
 using namespace proxygen;
 using namespace folly;
@@ -37,20 +38,8 @@ void MainRouterHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept {
 }
 
 void MainRouterHandler::onEOM() noexcept {
-  folly::IOBuf* rawInput = body_.get();
-  fbstring input;
-  fbstring output;
-  if(NULL != rawInput && !rawInput->empty()) {
-    input = rawInput->moveToFbString();
-  }
-
-  if(input.empty()) {
-    output = "Give us a real request!\n";
-  } else if(isPalindrome(input)) {
-    output = input + " is a palindrome.\n";
-  } else {
-    output = input + " is NOT a palindrome.\n";
-  }
+  HomePageHTML homePage;
+  string output = homePage.getPage();
 
   ResponseBuilder(downstream_)
     .status(200, "OK")
