@@ -3,8 +3,10 @@
 
 class HomePageHTML {
 public:
+  HomePageHTML();
+  virtual ~HomePageHTML();
   string getPage();
 
 private:
-  StorageImpl storage;
+  Storage* storage;
 };
